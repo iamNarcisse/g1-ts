@@ -17,14 +17,28 @@ export default async function handler(
 
     const result = generateResponse(prompt);
 
+    let finalSteps: any[] = [];
+    let finalTotalThinkingTime;
+
     for await (const { steps, totalThinkingTime } of result) {
       console.log("Steps:", steps);
       if (totalThinkingTime) {
+        finalSteps = steps.map((item) => {
+          return {
+            ...item,
+            thinkingTime: undefined,
+          };
+        });
+        finalTotalThinkingTime = totalThinkingTime;
         console.log("Total Thinking Time:", totalThinkingTime);
       }
     }
 
-    res.status(200).json({ name: "John Doe" });
+    res.status(200).json({
+      message: "Success",
+      steps: finalSteps,
+      totalThinkingTime: finalTotalThinkingTime,
+    });
   } catch (error) {
     return res.status(200).json({ name: "John Doe" });
   }
